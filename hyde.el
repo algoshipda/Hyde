@@ -92,6 +92,12 @@
   :type 'string
   :group 'hyde)
 
+(defcustom hyde-home
+  nil
+  "Hyde home."
+  :type 'string
+  :group 'hyde)
+
 (defun gen-post-template (title)
   (concat
    "---\n"
@@ -108,6 +114,12 @@
 (defcustom hyde-gen-post-template
   #'gen-post-template
   "Generate post template."
+  :type 'function
+  :group 'hyde)
+
+(defcustom hyde-post-mode
+  #'hyde-markdown-activate-mode
+  "Post mode."
   :type 'function
   :group 'hyde)
 
@@ -354,8 +366,7 @@ user"
     (let ((hyde-buffer (current-buffer)))
       (find-file 
        (strip-string (concat hyde-home "/" dir "/" post-file-name)))
-      (hyde-markdown-activate-mode hyde-buffer))))
-
+      (funcall hyde-post-mode hyde-buffer))))
 
 (defun hyde/new-post (title)
   "Creates a new post"
@@ -375,7 +386,7 @@ user"
     (find-file post-file-name)
 
     ;; hyde-home not available in markdown buffer (FIXME)
-    (hyde-markdown-activate-mode hyde-buffer)))
+    (funcall hyde-post-mode hyde-buffer)))
 
 (defun hyde/delete-post (pos)
   (interactive "d")
@@ -393,7 +404,6 @@ user"
   "Quits hyde"
   (interactive)
   (kill-buffer (current-buffer)))
-
 
 ;; Keymaps
 (defvar hyde-mode-map
