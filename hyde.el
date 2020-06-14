@@ -81,7 +81,7 @@
 (defvar hyde/serve-process nil "Process to keep track of serve")
 
 (defcustom hyde/deploy-command
-  "rsync -vr _site/* nkv@ssh.hcoop.net:/afs/hcoop.net/user/n/nk/nkv/public_html/nibrahim.net.in/"
+  "git push"
   "Command used to deploy the site to the actual server"
   :type 'string
   :group 'hyde)
@@ -271,7 +271,7 @@ already started, stops and restarts."
   "Deploys the generated website (should be run after hyde/run-jekyll"
   (interactive)
   (shell-command (format "cd %s && %s" (expand-file-name hyde-home) hyde/deploy-command)))
-  
+
   
 ;; Utility functions
 (defun hyde/hyde-file-local-unsaved-changed (dir file)
@@ -313,7 +313,7 @@ properly and returns them so that they can be presented to the
 user"
   (let* (
          (posts-dir (concat (expand-file-name hyde-home) "/" dir))
-         (posts (directory-files posts-dir nil ".*md\\|.*markdown" nil)))
+         (posts (directory-files posts-dir nil ".*md\\|.*markdown\\|.*org" nil)))
     (map 'list (lambda (f) (format "%s : %s" (hyde/file-status dir f) f)) posts)))
 
 (defun hyde/hyde-get-post-assets (post)
