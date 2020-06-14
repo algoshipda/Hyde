@@ -92,6 +92,25 @@
   :type 'string
   :group 'hyde)
 
+(defun gen-post-template (title)
+  (concat
+   "---\n"
+   "layout: post\n"
+   (format "title: \"%s\"\n" title)
+   (apply 'concat (mapcar
+                   #'(lambda (l)
+                       (format "%s: %s\n"
+                               (first l)
+                               (eval (second l))))
+                   hyde-custom-params))
+   "---\n\n"))
+
+(defcustom hyde-gen-post-template
+  #'gen-post-template
+  "Generate post template."
+  :type 'function
+  :group 'hyde)
+
 ;; Faces and font-locking
 (defface hyde-header-face
   '(
@@ -350,19 +369,12 @@ user"
         (hyde-buffer (current-buffer)))
     (save-excursion
       (find-file post-file-name)
-      (insert "---\n")
-      (insert "layout: post\n")
-      (insert (format "title: \"%s\"\n" title))
-      (dolist (l hyde-custom-params)
-	(insert (format "%s: %s\n"
-			(first l)
-			(eval (second l)))))
-      (insert "---\n\n")
+      (insert (funcall hyde-gen-post-template title))
       (save-buffer))
     (hyde/hyde-add-file post-file-name)
     (find-file post-file-name)
 
-     ;; hyde-home not available in markdown buffer (FIXME)
+    ;; hyde-home not available in markdown buffer (FIXME)
     (hyde-markdown-activate-mode hyde-buffer)))
 
 (defun hyde/delete-post (pos)
