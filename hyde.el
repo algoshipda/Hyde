@@ -86,6 +86,12 @@
   :type 'string
   :group 'hyde)
 
+(defcustom hyde-post-ext
+  ".markdown"
+  "Extension name for post."
+  :type 'string
+  :group 'hyde)
+
 ;; Faces and font-locking
 (defface hyde-header-face
   '(
@@ -335,9 +341,12 @@ user"
 (defun hyde/new-post (title)
   "Creates a new post"
   (interactive "MEnter post title: ")
-  (let ((post-file-name (expand-file-name (format "%s/%s/%s.markdown" 
-                                                  hyde-home hyde-drafts-dir (concat 
-                                                                             (downcase (replace-regexp-in-string " " "_" title))))))
+  (let ((post-file-name (expand-file-name (format "%s/%s/%s%s" 
+                                                  hyde-home
+                                                  hyde-drafts-dir
+                                                  (concat 
+                                                   (downcase (replace-regexp-in-string " " "_" title)))
+                                                  hyde-post-ext)))
         (hyde-buffer (current-buffer)))
     (save-excursion
       (find-file post-file-name)
